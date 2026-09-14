@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Placeholder mark. 768x768 tile centred in 1024, i.e. 96x96 art in a 128
+       canvas, with three fading bars for a feed going quiet. -->
+  <rect x="128" y="128" width="768" height="768" rx="170" fill="#334155"/>
+  <g fill="#F1F5F9">
+    <rect x="256" y="320" width="512" height="96" rx="48"/>
+    <rect x="256" y="464" width="512" height="96" rx="48" opacity="0.6"/>
+    <rect x="256" y="608" width="512" height="96" rx="48" opacity="0.3"/>
+  </g>
+</svg>
