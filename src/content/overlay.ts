@@ -115,7 +115,7 @@ const OVERLAY_CSS = `
 }
 
 .igfb-switch input:checked + .igfb-slider {
-  background: #334155;
+  background: #0f766e;
 }
 
 .igfb-switch input:checked + .igfb-slider::before {
@@ -123,7 +123,7 @@ const OVERLAY_CSS = `
 }
 
 .igfb-switch input:focus-visible + .igfb-slider {
-  outline: 2px solid #64748b;
+  outline: 2px solid #14b8a6;
   outline-offset: 2px;
 }
 
@@ -131,7 +131,7 @@ const OVERLAY_CSS = `
   appearance: none;
   min-height: 34px;
   padding: 0 16px;
-  background: #0f172a;
+  background: #0f766e;
   border: 0;
   border-radius: 999px;
   color: #fff;
@@ -141,11 +141,11 @@ const OVERLAY_CSS = `
 }
 
 .igfb-block-button:hover {
-  background: #334155;
+  background: #115e59;
 }
 
 .igfb-block-button:focus-visible {
-  outline: 2px solid #64748b;
+  outline: 2px solid #14b8a6;
   outline-offset: 2px;
 }
 
@@ -187,16 +187,16 @@ const OVERLAY_CSS = `
   }
 
   .igfb-switch input:checked + .igfb-slider {
-    background: #94a3b8;
+    background: #2dd4bf;
   }
 
   .igfb-block-button {
-    background: #f1f5f9;
-    color: #0f172a;
+    background: #2dd4bf;
+    color: #042f2e;
   }
 
   .igfb-block-button:hover {
-    background: #cbd5e1;
+    background: #5eead4;
   }
 }
 `
