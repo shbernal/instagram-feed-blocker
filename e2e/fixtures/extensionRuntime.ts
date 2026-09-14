@@ -51,6 +51,9 @@ export const launchBrowserProfileContext = async ({
     executablePath: resolveChromiumExecutable(),
     headless,
     viewport: { width: 1280, height: 800 },
+    // Instagram localizes its signed-out pages and its labels from this, so
+    // pinning it keeps login prompts and probes reading the same text.
+    locale: 'en-US',
     args: [...extensionArgs, '--no-sandbox'],
   })
 }

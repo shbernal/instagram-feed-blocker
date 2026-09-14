@@ -39,6 +39,9 @@
     "e2e": "tsc -b && vite build && playwright test",
     "e2e:headed": "tsc -b && vite build && playwright test --headed",
     "e2e:ui": "tsc -b && vite build && playwright test --ui",
+    "e2e:real:setup": "tsc -b && playwright test -c playwright.real.config.ts --grep @setup --headed",
+    "e2e:real:open": "node scripts/open-real-instagram.mjs",
+    "e2e:real:open:extension": "tsc -b && vite build && INSTAGRAM_REAL_OPEN_EXTENSION=1 node scripts/open-real-instagram.mjs",
     "format": "oxfmt --check .",
     "format:write": "oxfmt .",
     "preview": "vite preview"
