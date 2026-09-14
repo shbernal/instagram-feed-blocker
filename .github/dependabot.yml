@@ -1,0 +1,18 @@
+version: 2
+
+updates:
+  # A browser extension ships its bundled dependencies, so they need to keep
+  # moving even when nothing else in the repository does.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        dependency-type: development
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

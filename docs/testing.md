@@ -37,6 +37,16 @@ into Firefox. [Build targets](./build-targets.md) covers what is checked there.
   `INSPECT_PROFILE_DIR=.e2e/instagram-real-profile` runs it against the
   signed-in profile.
 
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every pull request and every push to `main`,
+in two jobs. `validate` runs `pnpm format`, `pnpm lint`, `pnpm typecheck`,
+`pnpm test:coverage`, `pnpm build` and `pnpm lint:firefox`. `e2e` installs
+Playwright's Chromium, runs `pnpm e2e`, and uploads the Playwright report.
+
+CI has no Instagram account, so the real-site lane never runs there, and nothing
+in CI runs the Firefox package. Both stay with whoever changes the code.
+
 ## Vitest
 
 - The environment is jsdom, with `https://www.instagram.com/` as its address.
