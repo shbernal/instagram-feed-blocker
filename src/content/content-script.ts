@@ -1,6 +1,7 @@
 import {
   DEFAULT_SETTINGS,
   normalizeSettings,
+  PAGE_SECTIONS,
   SETTINGS_STORAGE_KEY,
   syncActiveWithPages,
   type ExtensionSettings,
@@ -12,9 +13,26 @@ import {
   TOGGLE_SHORTCUT_STORAGE_KEY,
   type ParsedShortcut,
 } from '../shared/shortcut'
-import { applySectionBlocking, clearAllBlocking } from './blocking'
+import {
+  applySectionBlocking,
+  clearAllBlocking,
+  isSectionBlocked,
+} from './blocking'
 import { markBlockingReady, READY_FALLBACK_MS } from './blockingStyles'
-import { getRouteSections } from './routes'
+import {
+  restoreAllManagedMedia,
+  startMediaGuard,
+  stopMediaGuard,
+  syncSectionMedia,
+} from './media'
+import {
+  removeOverlay,
+  removeOverlayStyles,
+  renderOverlay,
+  type OverlayHandlers,
+} from './overlay'
+import { getRoutePrimarySection, getRouteSections } from './routes'
+import { SECTION_SELECTORS } from './selectors'
 
 type UpdateSettingsMessage = {
   action: 'updateSettings'
@@ -34,9 +52,9 @@ type NavigationEvents = {
 
 const SHORTCUT_DUPLICATE_WINDOW_MS = 500
 
-// Instagram re-renders constantly, so a route check is scheduled rather than
-// run per mutation. One pending timer at a time collapses a burst of churn
-// into a single pass.
+// Instagram re-renders constantly, so a pass is scheduled rather than run per
+// mutation. One pending timer at a time collapses a burst of churn into a
+// single pass.
 const REAPPLY_DELAY_MS = 100
 
 let settings: ExtensionSettings = { ...DEFAULT_SETTINGS }
@@ -75,7 +93,53 @@ const isToggleCurrentPageBlockMessage = (
   )
 }
 
-const applyCurrentSettings = () => {
+const saveSettings = (nextSettings: ExtensionSettings) => {
+  chrome.storage.local.set({
+    [SETTINGS_STORAGE_KEY]: syncActiveWithPages(nextSettings),
+  })
+}
+
+const setPrimarySectionBlocked = (blocked: boolean) => {
+  const section = getRoutePrimarySection(window.location.pathname)
+  if (section === null) {
+    return
+  }
+
+  settings = syncActiveWithPages({ ...settings, [section]: blocked })
+  saveSettings(settings)
+  applyCurrentSettings()
+}
+
+// A stable singleton, since the overlay keeps whatever it is handed.
+const overlayHandlers: OverlayHandlers = {
+  onToggle: blocked => {
+    setPrimarySectionBlocked(blocked)
+  },
+  onBlock: () => {
+    setPrimarySectionBlocked(true)
+  },
+}
+
+// The card only makes sense where its section's targets are actually on the
+// page. That keeps it off Messages under Instagram's stale `/reels/<id>/` URL,
+// off Explore while search is in use, and away until Instagram has rendered.
+const syncOverlay = () => {
+  const section = getRoutePrimarySection(window.location.pathname)
+  const onPage =
+    section !== null &&
+    SECTION_SELECTORS[section].some(
+      selector => document.querySelector(selector) !== null,
+    )
+
+  if (!settings.overlay || section === null || !onPage) {
+    removeOverlay()
+    return
+  }
+
+  renderOverlay(settings, overlayHandlers, section)
+}
+
+function applyCurrentSettings() {
   const pathname = window.location.pathname
   const sections = getRouteSections(pathname)
 
@@ -87,6 +151,8 @@ const applyCurrentSettings = () => {
 
   appliedPathname = pathname
   applySectionBlocking(settings, routeSections)
+  syncSectionMedia(PAGE_SECTIONS.filter(isSectionBlocked))
+  syncOverlay()
 }
 
 const cancelReadyFallback = () => {
@@ -119,12 +185,6 @@ const scheduleApply = () => {
     reapplyTimeoutId = null
     applyCurrentSettings()
   }, REAPPLY_DELAY_MS)
-}
-
-const saveSettings = (nextSettings: ExtensionSettings) => {
-  chrome.storage.local.set({
-    [SETTINGS_STORAGE_KEY]: syncActiveWithPages(nextSettings),
-  })
 }
 
 const toggleCurrentPageBlock = () => {
@@ -235,10 +295,19 @@ const onNavigation = () => {
 }
 
 const setupObserver = () => {
-  // A pathname comparison per mutation batch is all this costs: blocking
-  // itself is CSS, so nothing needs re-applying unless the route moved.
-  observer = new MutationObserver(() => {
+  observer = new MutationObserver(mutations => {
     if (window.location.pathname !== appliedPathname) {
+      scheduleApply()
+      return
+    }
+
+    // Hiding is CSS and needs nothing from here. What does is a video to
+    // silence, or the card's target, appearing where a route has sections;
+    // routes without any only care whether the route moved.
+    if (
+      routeSections.length > 0 &&
+      mutations.some(mutation => mutation.addedNodes.length > 0)
+    ) {
       scheduleApply()
     }
   })
@@ -276,6 +345,7 @@ export const initContentScript = () => {
   document.addEventListener('keydown', onKeyDown, true)
   window.addEventListener('popstate', onNavigation)
   getNavigation()?.addEventListener('currententrychange', onNavigation)
+  startMediaGuard()
   setupObserver()
 }
 
@@ -288,6 +358,7 @@ export const cleanupContentScript = () => {
   document.removeEventListener('keydown', onKeyDown, true)
   window.removeEventListener('popstate', onNavigation)
   getNavigation()?.removeEventListener('currententrychange', onNavigation)
+  stopMediaGuard()
 
   if (observer) {
     observer.disconnect()
@@ -295,6 +366,9 @@ export const cleanupContentScript = () => {
   }
 
   cancelScheduledApply()
+  removeOverlay()
+  removeOverlayStyles()
+  restoreAllManagedMedia()
 }
 
 // Importing this module must not touch the page, so the unit tests in jsdom can

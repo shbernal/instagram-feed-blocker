@@ -48,3 +48,15 @@ export const getRouteSections = (
 
   return NO_SECTIONS
 }
+
+/**
+ * The section the in-page card speaks for: the first one a route lists, which
+ * is the one whose removal empties the page. Stories and suggestions stay a
+ * popup setting. `null` where there is no card, including the story viewer.
+ */
+export const getRoutePrimarySection = (
+  pathname: string,
+): PageSection | null => {
+  const sections = getRouteSections(pathname)
+  return sections && sections.length > 0 ? sections[0] : null
+}

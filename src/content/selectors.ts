@@ -63,3 +63,20 @@ export const SECTION_SELECTORS: Record<PageSection, readonly string[]> = {
   // `/reels/`, before any reel has mounted.
   reels: [`${MAIN}:has([data-virtualized] video)`],
 }
+
+/**
+ * The media each section silences while it is blocked. CSS hides a video but
+ * does not stop it, so this half stays in JavaScript.
+ *
+ * Every entry is scoped by the same DOM signal as the section's stylesheet
+ * rule, never by the route alone. Under Instagram's stale `/reels/<id>/` URL
+ * the Reels section stays applied over Messages, and a sweep of every video
+ * in `main` would pause a reel someone shared in a thread.
+ */
+export const SECTION_MEDIA_SELECTORS: Record<PageSection, readonly string[]> = {
+  homeFeed: [`${MAIN} article video`],
+  homeStories: [],
+  homeSuggestions: [],
+  explore: [`${MAIN} > div > div:has(a[href^="/p/"]):not(:has(input)) video`],
+  reels: [`${MAIN} [data-virtualized] video`],
+}

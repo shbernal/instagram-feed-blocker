@@ -1,5 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { getRouteSections } from './routes'
+import { getRoutePrimarySection, getRouteSections } from './routes'
+
+describe('getRoutePrimarySection', () => {
+  it('names the section whose removal empties the page', () => {
+    expect(getRoutePrimarySection('/')).toBe('homeFeed')
+    expect(getRoutePrimarySection('/explore/')).toBe('explore')
+    expect(getRoutePrimarySection('/reels/abc/')).toBe('reels')
+  })
+
+  it('has no card to offer elsewhere', () => {
+    expect(getRoutePrimarySection('/direct/inbox/')).toBeNull()
+    expect(getRoutePrimarySection('/stories/some.user/')).toBeNull()
+    expect(getRoutePrimarySection('/p/abc/')).toBeNull()
+  })
+})
 
 describe('getRouteSections', () => {
   it('gives Home its three sections', () => {

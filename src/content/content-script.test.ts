@@ -1,3 +1,5 @@
+import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   DEFAULT_SETTINGS,
@@ -7,9 +9,15 @@ import {
 } from '../shared/settings'
 import { TOGGLE_SHORTCUT_STORAGE_KEY } from '../shared/shortcut'
 import { getChromeMock } from '../test/chrome'
-import { HOME_BODY, REELS_BODY } from '../test/fixtures/instagram'
+import {
+  DIRECT_BODY,
+  EXPLORE_SEARCH_BODY,
+  HOME_BODY,
+  REELS_BODY,
+} from '../test/fixtures/instagram'
 import { isSectionBlocked } from './blocking'
 import { isBlockingReady, READY_FALLBACK_MS } from './blockingStyles'
+import { OVERLAY_ID } from './overlay'
 
 type ContentScriptModule = typeof import('./content-script')
 
@@ -148,9 +156,9 @@ describe('following client-side navigation', () => {
     expect(blockedSections()).toEqual([])
   })
 
-  it('does not schedule anything for churn on the same route', async () => {
+  it('ignores churn on a route with nothing to block', async () => {
     vi.useFakeTimers()
-    visit('/', HOME_BODY)
+    visit('/direct/inbox/', DIRECT_BODY)
     await loadContentScript()
 
     document.body.append(document.createElement('div'))
@@ -388,6 +396,165 @@ describe('toggling the current page', () => {
 
     expect(sendResponse).toHaveBeenCalledWith({ success: true })
     expect(isSectionBlocked('explore')).toBe(false)
+  })
+})
+
+describe('media', () => {
+  const reelsVideo = () => {
+    const video = document.querySelector<HTMLVideoElement>(
+      '[data-virtualized] video',
+    )
+    if (!video) {
+      throw new Error('Reels fixture has no player video')
+    }
+    return video
+  }
+
+  it('silences the Reels player and gives it back when unblocked', async () => {
+    visit('/reels/abc/', REELS_BODY)
+    const video = reelsVideo()
+    video.muted = false
+    await video.play()
+
+    await loadContentScript()
+
+    expect(video.paused).toBe(true)
+    expect(video.muted).toBe(true)
+
+    getChromeMock().storage.local.set({
+      [SETTINGS_STORAGE_KEY]: { ...DEFAULT_SETTINGS, reels: false },
+    })
+
+    expect(video.paused).toBe(false)
+    expect(video.muted).toBe(false)
+  })
+
+  it('silences a video Instagram mounts after startup', async () => {
+    vi.useFakeTimers()
+    visit('/', HOME_BODY)
+    await loadContentScript()
+    const video = document.createElement('video')
+    await video.play()
+
+    document.querySelector('main[role="main"] article')?.append(video)
+    await Promise.resolve()
+    vi.advanceTimersByTime(100)
+
+    expect(video.paused).toBe(true)
+  })
+
+  // Instagram can leave `/reels/<id>/` in the address bar after Messages has
+  // rendered. A reel shared in a thread must keep playing.
+  it('leaves Messages media alone under a stale Reels URL', async () => {
+    visit('/reels/abc/', DIRECT_BODY)
+    const video = document.createElement('video')
+    document.querySelector('[aria-label="Thread list"]')?.append(video)
+    await video.play()
+
+    await loadContentScript()
+
+    expect(isSectionBlocked('reels')).toBe(true)
+    expect(video.paused).toBe(false)
+    expect(document.getElementById(OVERLAY_ID)).toBeNull()
+  })
+
+  it('gives media back and removes the card on cleanup', async () => {
+    visit('/reels/abc/', REELS_BODY)
+    const video = reelsVideo()
+    await video.play()
+    const script = await loadContentScript()
+    expect(document.getElementById(OVERLAY_ID)).not.toBeNull()
+
+    script.cleanupContentScript()
+
+    expect(video.paused).toBe(false)
+    expect(document.getElementById(OVERLAY_ID)).toBeNull()
+  })
+})
+
+describe('the in-page card', () => {
+  it('unblocks the Home feed from its switch and blocks it again from the button', async () => {
+    visit('/', HOME_BODY)
+    await loadContentScript()
+
+    const toggle = screen.getByRole('checkbox', { name: 'Block Home feed' })
+    expect(toggle).toBeChecked()
+
+    await userEvent.click(toggle)
+
+    expect(storedSettings()).toMatchObject({
+      homeFeed: false,
+      homeStories: true,
+      homeSuggestions: true,
+    })
+    expect(isSectionBlocked('homeFeed')).toBe(false)
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Block Home feed' }),
+    )
+
+    expect(storedSettings()).toMatchObject({ homeFeed: true })
+    expect(isSectionBlocked('homeFeed')).toBe(true)
+  })
+
+  it('stays away when the overlay is switched off', async () => {
+    visit('/', HOME_BODY)
+    seedSettings({ overlay: false })
+
+    await loadContentScript()
+
+    expect(document.getElementById(OVERLAY_ID)).toBeNull()
+    expect(isSectionBlocked('homeFeed')).toBe(true)
+  })
+
+  it('stays away from routes without a card', async () => {
+    visit('/direct/inbox/', DIRECT_BODY)
+    await loadContentScript()
+
+    expect(document.getElementById(OVERLAY_ID)).toBeNull()
+  })
+
+  it('leaves the story viewer uncovered', async () => {
+    visit('/', HOME_BODY)
+    await loadContentScript()
+    expect(document.getElementById(OVERLAY_ID)).not.toBeNull()
+
+    visit('/stories/some.user/')
+    window.dispatchEvent(new PopStateEvent('popstate'))
+
+    expect(document.getElementById(OVERLAY_ID)).toBeNull()
+  })
+
+  it('stays away while Explore search is in use', async () => {
+    visit('/explore/', EXPLORE_SEARCH_BODY)
+    await loadContentScript()
+
+    expect(isSectionBlocked('explore')).toBe(true)
+    expect(document.getElementById(OVERLAY_ID)).toBeNull()
+  })
+
+  it('appears once Instagram has rendered the feed', async () => {
+    vi.useFakeTimers()
+    visit('/')
+    await loadContentScript()
+    expect(document.getElementById(OVERLAY_ID)).toBeNull()
+
+    document.body.innerHTML = HOME_BODY
+    await Promise.resolve()
+    vi.advanceTimersByTime(100)
+
+    expect(document.getElementById(OVERLAY_ID)).not.toBeNull()
+  })
+
+  it('does nothing from a stale card once the route has no section', async () => {
+    visit('/', HOME_BODY)
+    await loadContentScript()
+    const toggle = screen.getByRole('checkbox', { name: 'Block Home feed' })
+
+    window.history.replaceState({}, '', '/direct/inbox/')
+    await userEvent.click(toggle)
+
+    expect(storedSettings()).toBeUndefined()
   })
 })
 
