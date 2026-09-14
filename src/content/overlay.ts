@@ -246,33 +246,55 @@ const setAttribute = (element: Element | null, name: string, value: string) => {
   }
 }
 
+// Built node by node rather than through `innerHTML`. The markup is static, but
+// a store linter cannot tell a template literal from untrusted input, and every
+// such warning is something an add-on reviewer has to clear by hand.
+const createElement = <Tag extends keyof HTMLElementTagNameMap>(
+  tag: Tag,
+  { id, className }: { id?: string; className?: string } = {},
+) => {
+  const element = document.createElement(tag)
+  if (id) {
+    element.id = id
+  }
+  if (className) {
+    element.className = className
+  }
+  return element
+}
+
 const buildBlockedMarkup = (overlay: HTMLElement) => {
-  overlay.innerHTML = `
-    <p class="igfb-title">Instagram Feed Blocker</p>
-    <div class="igfb-toggle-row">
-      <p id="${OVERLAY_TOGGLE_LABEL_ID}" class="igfb-toggle-label"></p>
-      <label class="igfb-switch">
-        <input
-          id="${OVERLAY_TOGGLE_ID}"
-          type="checkbox"
-          aria-labelledby="${OVERLAY_TOGGLE_LABEL_ID}"
-        />
-        <span class="igfb-slider"></span>
-      </label>
-    </div>
-  `
-  overlay
-    .querySelector(`#${OVERLAY_TOGGLE_ID}`)
-    ?.addEventListener('change', handleToggle)
+  const title = createElement('p', { className: 'igfb-title' })
+  title.textContent = 'Instagram Feed Blocker'
+
+  const label = createElement('p', {
+    id: OVERLAY_TOGGLE_LABEL_ID,
+    className: 'igfb-toggle-label',
+  })
+
+  const input = createElement('input', { id: OVERLAY_TOGGLE_ID })
+  input.type = 'checkbox'
+  input.setAttribute('aria-labelledby', OVERLAY_TOGGLE_LABEL_ID)
+  input.addEventListener('change', handleToggle)
+
+  const toggle = createElement('label', { className: 'igfb-switch' })
+  toggle.append(input, createElement('span', { className: 'igfb-slider' }))
+
+  const row = createElement('div', { className: 'igfb-toggle-row' })
+  row.append(label, toggle)
+
+  overlay.replaceChildren(title, row)
 }
 
 const buildAvailableMarkup = (overlay: HTMLElement) => {
-  overlay.innerHTML = `
-    <button id="${OVERLAY_BLOCK_BUTTON_ID}" class="igfb-block-button" type="button"></button>
-  `
-  overlay
-    .querySelector(`#${OVERLAY_BLOCK_BUTTON_ID}`)
-    ?.addEventListener('click', handleBlock)
+  const button = createElement('button', {
+    id: OVERLAY_BLOCK_BUTTON_ID,
+    className: 'igfb-block-button',
+  })
+  button.type = 'button'
+  button.addEventListener('click', handleBlock)
+
+  overlay.replaceChildren(button)
 }
 
 /**
