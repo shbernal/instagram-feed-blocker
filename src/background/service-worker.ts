@@ -1,6 +1,11 @@
+import { isInstagramUrl } from '../shared/instagram'
 import { TOGGLE_SHORTCUT_STORAGE_KEY } from '../shared/shortcut'
 
 const TOGGLE_CURRENT_PAGE_COMMAND = 'toggle-current-page-block'
+
+type ToggleCurrentPageBlockMessage = {
+  action: 'toggleCurrentPageBlock'
+}
 
 // Content scripts cannot read `chrome.commands`, so the resolved binding is
 // mirrored into storage for the in-page keydown fallback to match against.
@@ -19,3 +24,25 @@ const syncToggleShortcut = () => {
 }
 
 syncToggleShortcut()
+
+chrome.commands.onCommand.addListener(command => {
+  if (command !== TOGGLE_CURRENT_PAGE_COMMAND) {
+    return
+  }
+
+  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+    if (tab?.id === undefined || !isInstagramUrl(tab.url)) {
+      return
+    }
+
+    const message: ToggleCurrentPageBlockMessage = {
+      action: 'toggleCurrentPageBlock',
+    }
+
+    chrome.tabs.sendMessage(tab.id, message, () => {
+      // A tab with no content script answers with an error; reading it keeps
+      // Chrome from logging it as unchecked.
+      void chrome.runtime.lastError
+    })
+  })
+})

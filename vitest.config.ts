@@ -27,10 +27,10 @@ export default defineConfig({
       // The text reporter omits fully covered files; that is `skipFull`
       // behaviour, not a gap in the report.
       thresholds: {
-        statements: 96,
-        branches: 95,
+        statements: 97,
+        branches: 96,
         functions: 98,
-        lines: 96,
+        lines: 97,
       },
     },
   },
