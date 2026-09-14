@@ -33,11 +33,17 @@ export default defineManifest({
       description: 'Toggle blocking for the current Instagram page',
     },
   },
+  // One entry for every Instagram page, at document_start. The stylesheet has to
+  // be in place before anything renders, and it cannot be scoped to routes here:
+  // Instagram navigates client-side and the browser never re-evaluates
+  // `matches` for that. Route scoping is the content script's job, through the
+  // attributes the stylesheet keys on.
   content_scripts: [
     {
       matches: ['*://*.instagram.com/*'],
       js: ['src/content/content-script.ts'],
-      run_at: 'document_end',
+      css: ['src/content/blocking.css'],
+      run_at: 'document_start',
     },
   ],
   action: {
