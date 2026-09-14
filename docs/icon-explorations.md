@@ -48,7 +48,7 @@ crescent's silhouette survives 16px with nothing to lose.
 A crescent drawn with its disc on the tile centre looks off-centre, because the
 bite takes mass from the upper right. Measured on the 128px render, the filled
 area's centroid sat 9px left of centre and 8px below it. Moving the disc one
-device pixel up and one right (64 units each way) brings the centroid within a
+device pixel up and one right, 64 units each way, brings the centroid within a
 pixel of centre, and the disc's edges stay on the grid. The image above is the
 shipped, centred version.
 
