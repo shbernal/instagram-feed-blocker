@@ -15,6 +15,17 @@ export default defineConfig({
       },
     },
     setupFiles: ['./src/test/setup.ts'],
+    // jsdom runs its own event plumbing on `setImmediate`. Faking it would put
+    // jsdom's tasks in the fake clock beside the extension's timers.
+    fakeTimers: {
+      toFake: [
+        'setTimeout',
+        'clearTimeout',
+        'setInterval',
+        'clearInterval',
+        'Date',
+      ],
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
