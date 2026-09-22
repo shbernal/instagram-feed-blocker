@@ -16,18 +16,18 @@ export const installMediaStub = () => {
     },
   )
 
-  vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(
-    function (this: HTMLMediaElement) {
-      pausedByElement.set(this, false)
-      this.dispatchEvent(new Event('play'))
-      return Promise.resolve()
-    },
-  )
+  vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(function (
+    this: HTMLMediaElement,
+  ) {
+    pausedByElement.set(this, false)
+    this.dispatchEvent(new Event('play'))
+    return Promise.resolve()
+  })
 
-  vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(
-    function (this: HTMLMediaElement) {
-      pausedByElement.set(this, true)
-      this.dispatchEvent(new Event('pause'))
-    },
-  )
+  vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(function (
+    this: HTMLMediaElement,
+  ) {
+    pausedByElement.set(this, true)
+    this.dispatchEvent(new Event('pause'))
+  })
 }
