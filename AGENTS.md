@@ -12,6 +12,8 @@ Firefox.
     `pnpm e2e:real:setup`
   - `UPDATE_BLOCKING_CSS=1 pnpm test` after changing `SECTION_SELECTORS`
   - `pnpm icons` after changing `store/logo.svg`, judged at 16px
+  - `pnpm store:shots` after a visible change, then copy by eye into
+    `store/screenshots/`; `pnpm publish:amo --plan` to see what AMO would get
 
 - Key documentation
   - [docs/current-implementation.md](docs/current-implementation.md): routes,
@@ -21,6 +23,8 @@ Firefox.
   - [docs/build-targets.md](docs/build-targets.md): the Firefox build
   - [docs/icon-explorations.md](docs/icon-explorations.md): read before
     proposing a new mark
+  - [docs/ci-release-flow.md](docs/ci-release-flow.md): the two publish
+    workflows, the AMO reconcile, and how a release is cut
 
 - Rules with consequences
   - Never `await` a `chrome.*` call. Firefox's `chrome.*` is callback-only.
@@ -44,7 +48,14 @@ Firefox.
     a deliberate call with store rejection as its known cost.
     `store/logo-dusk.svg` is the standby that borrows nothing; switching is one
     edit to `MARK` in `scripts/generate-icons.mjs` plus `pnpm icons`.
-  - Do not publish, tag releases or upload packages unless asked.
+  - Publishing a GitHub Release is the release: it submits to both stores with
+    nothing typed by hand. Do not tag, publish or upload unless asked.
+  - Every release bumps `package.json` first. Neither store takes a version
+    number twice, and both workflows fail a tag that disagrees with it.
+  - AMO previews are compared by decoded pixels, so every listing screenshot is
+    a PNG. AMO re-encodes a JPEG and it would upload again forever.
+  - `store/` is shared by both listings. An edit there is a queued AMO change as
+    well as a Chrome dashboard paste.
 
 - Iron Laws
   - Tokens are expensive, state of the art models need minimal guidance, don't repeat yourself, don't babysit, don't be over-specific.

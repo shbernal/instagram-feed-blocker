@@ -1,0 +1,25 @@
+Instagram is useful right up to the moment the feed starts scrolling. Instagram Feed Blocker takes away the endless surfaces and leaves the rest of the site exactly as it was.
+
+Blocked:
+
+- The Home feed, including suggested posts and the For you and Following tabs
+- The story tray at the top of Home
+- The Suggested for you module
+- The Explore grid and its tabs, while the search box and its results stay
+- The Reels tab
+
+Kept:
+
+- Messages, notifications and search
+- Profiles, including your own
+- A post or a reel someone sends you, opened from its link
+
+Each of the five sections is its own switch, so you can keep Explore and lose the feed, or the other way around. Turning a switch off puts back exactly what was hidden, down to whether a video was playing and whether it was muted. Videos inside a hidden section are paused rather than left running out of sight.
+
+Three ways to flip a switch: the popup, the card that appears on a blocked page, and Ctrl+Shift+9 (Command+Shift+9 on macOS) for the page you are on.
+
+The page never flashes its feed before the block lands. The stylesheet is in place before Instagram renders anything.
+
+Your settings stay in local extension storage. The extension makes no network requests of its own, asks only for storage, activeTab and access to instagram.com, and collects nothing.
+
+Open source, MIT licensed: github.com/shbernal/instagram-feed-blocker

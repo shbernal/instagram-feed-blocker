@@ -46,18 +46,22 @@ automated runtime test; [Build targets](./build-targets.md) explains why.
 | `tests/`                           | source-tree guards that run inside Vitest                           |
 | `e2e/specs/`                       | the fixture Playwright suite                                        |
 | `e2e/real/`, `e2e/manual/`         | the signed-in lanes against live Instagram                          |
-| `scripts/`                         | icon rendering, browser launchers, the runtime inspector            |
+| `scripts/`                         | icon rendering, browser launchers, the inspector, the release tools |
 | `store/logo.svg`                   | the mark every icon renders from                                    |
 | `store/logo-dusk.svg`              | the standby mark, for a store that objects to the gradient          |
+| `store/description.txt`            | the long description both stores publish verbatim                   |
+| `store/screenshots/`               | the listing screenshots both stores publish                         |
+| `amo/`                             | the addons.mozilla.org listing, previews and reviewer answers       |
+| `chrome-web-store/`                | the Chrome dashboard privacy and permission answers                 |
 | `public/icons/`                    | the rendered icons, committed                                       |
 
-Git ignores `dist/`, `dist-firefox/`, `test-results/`, `playwright-report/`
-and `.e2e/`. The last one holds the signed-in browser profile.
+Git ignores `dist/`, `dist-firefox/`, `release/`, `media-capture/`,
+`test-results/`, `playwright-report/` and `.e2e/`. The last one holds the
+signed-in browser profile.
 
 ## Out of scope
 
 - The Instagram app and the mobile site.
-- Store listings and publishing.
 - Hiding the Reels and Explore links in the navigation. The destinations are
   blocked and the links stay.
 
