@@ -48,6 +48,7 @@ automated runtime test; [Build targets](./build-targets.md) explains why.
 | `e2e/real/`, `e2e/manual/`         | the signed-in lanes against live Instagram                          |
 | `scripts/`                         | icon rendering, browser launchers, the runtime inspector            |
 | `store/logo.svg`                   | the mark every icon renders from                                    |
+| `store/logo-dusk.svg`              | the standby mark, for a store that objects to the gradient          |
 | `public/icons/`                    | the rendered icons, committed                                       |
 
 Git ignores `dist/`, `dist-firefox/`, `test-results/`, `playwright-report/`

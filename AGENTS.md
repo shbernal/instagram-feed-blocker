@@ -40,8 +40,10 @@ Firefox.
   - `.e2e/` holds a live Instagram session and `.env` holds its credentials.
     Neither is ever committed.
   - The coverage floor in `vitest.config.ts` only moves up.
-  - The mark never uses Instagram's camera glyph, a rounded-square outline, or
-    Instagram's gradient.
+  - The mark never uses Instagram's camera glyph. It does wear their gradient,
+    a deliberate call with store rejection as its known cost.
+    `store/logo-dusk.svg` is the standby that borrows nothing; switching is one
+    edit to `MARK` in `scripts/generate-icons.mjs` plus `pnpm icons`.
   - Do not publish, tag releases or upload packages unless asked.
 
 - Iron Laws
