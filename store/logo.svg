@@ -1,18 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
   <!-- 768x768 tile centred in 1024, i.e. 96x96 art in a 128 canvas. At 16px the
-       tile is 12 device pixels, so 64 units is exactly one of them: the disc's
-       edges sit on multiples of 64 and render crisp instead of smeared.
-       Teal against the near-white mark is about 4.9:1 in luminance. -->
-  <rect x="128" y="128" width="768" height="768" rx="170" fill="#0F766E"/>
+       tile is 12 device pixels, so 64 units is exactly one of them: every
+       straight edge below sits on a multiple of 64 and renders crisp. -->
 
-  <!-- A crescent moon, the Do Not Disturb sign. A crescent's filled mass sits
-       down and to the left of its disc, so the disc is moved one device pixel
-       up and right of the tile centre, which puts the mass within a pixel of
-       it. Keep the radii: a thinner crescent loses its tips at 16px. See
-       docs/icon-explorations.md for the directions this replaced. -->
+  <!-- Instagram's own ramp, radial from the lower left the way they draw it.
+       store/logo-dusk.svg is the same mark in colours that borrow nothing, and
+       is the one to ship if a store reviewer objects to this. -->
+  <radialGradient id="ramp" cx="0.22" cy="0.95" r="1.15">
+    <stop offset="0%" stop-color="#FEDA75"/>
+    <stop offset="25%" stop-color="#FA7E1E"/>
+    <stop offset="50%" stop-color="#D62976"/>
+    <stop offset="75%" stop-color="#962FBF"/>
+    <stop offset="100%" stop-color="#4F5BD5"/>
+  </radialGradient>
+  <rect x="128" y="128" width="768" height="768" rx="170" fill="url(#ramp)"/>
+
+  <!-- A lens barrel around a crescent moon: the lens keeps Do Not Disturb
+       hours. The ring is one device pixel thick, its edges on 256 and 320. The
+       moon stays at r=160 so a full pixel of ground separates it from the ring;
+       anything larger fuses with the ring at 16px. A crescent's filled mass
+       sits below and left of its disc, so the disc is 32 up and right of the
+       tile centre, which brings the mass back to it. -->
+  <circle cx="512" cy="512" r="288" fill="none" stroke="#F0FDFA" stroke-width="64"/>
   <mask id="bite">
     <rect width="1024" height="1024" fill="#fff"/>
-    <circle cx="704" cy="320" r="224" fill="#000"/>
+    <circle cx="608" cy="416" r="148" fill="#000"/>
   </mask>
-  <circle cx="576" cy="448" r="256" fill="#F0FDFA" mask="url(#bite)"/>
+  <circle cx="544" cy="480" r="160" fill="#F0FDFA" mask="url(#bite)"/>
 </svg>

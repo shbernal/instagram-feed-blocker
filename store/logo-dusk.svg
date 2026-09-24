@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- The standby mark: store/logo.svg's geometry, in colours that borrow
+       nothing from Instagram. It exists for the day a store reviewer objects to
+       the shipped tile wearing Instagram's ramp. Swapping is one edit to MARK in
+       scripts/generate-icons.mjs plus pnpm icons; nothing else reads this file.
+
+       The ramp starts on the teal the popup and the in-page card already use and
+       runs to violet and magenta. White holds against all three, which the
+       shipped tile's palest yellow makes a near thing. -->
+  <radialGradient id="ramp" cx="0.22" cy="0.95" r="1.15">
+    <stop offset="0%" stop-color="#0F766E"/>
+    <stop offset="45%" stop-color="#3B2F8F"/>
+    <stop offset="100%" stop-color="#A02A8E"/>
+  </radialGradient>
+  <rect x="128" y="128" width="768" height="768" rx="170" fill="url(#ramp)"/>
+
+  <circle cx="512" cy="512" r="288" fill="none" stroke="#F0FDFA" stroke-width="64"/>
+  <mask id="bite">
+    <rect width="1024" height="1024" fill="#fff"/>
+    <circle cx="608" cy="416" r="148" fill="#000"/>
+  </mask>
+  <circle cx="544" cy="480" r="160" fill="#F0FDFA" mask="url(#bite)"/>
+</svg>
