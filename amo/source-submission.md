@@ -62,11 +62,14 @@ outside the block is documentation and keeps its markup.
 
 ## Reproducibility
 
-The build is deterministic. Verify it before any release that changes
-dependencies, the Vite config, or the manifest config, by extracting the source
-archive into a fresh directory and running the instructions above. The rebuilt
-`dist-firefox/` must hold the same files with the same SHA-256 as the submitted
-package.
+The build is deterministic. Verified by extracting the source archive into a
+fresh directory and running the instructions above with Node 24.21.0 and
+pnpm 11.20.0: the rebuilt `dist-firefox/` held the same 14 files with the same
+SHA-256 as the submitted package. The output is not sensitive to the directory
+the build runs in.
+
+Re-run that check before any release that changes dependencies, the Vite config,
+or the manifest config.
 
 ## Note On The pnpm Version
 
