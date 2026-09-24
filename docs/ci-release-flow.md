@@ -134,6 +134,23 @@ service account. Adding a repository means editing that condition **and** adding
 its `principalSet` to the service account's `roles/iam.workloadIdentityUser`
 binding.
 
+## The first release
+
+AMO needs nothing prepared: a `PUT` on the guid creates the add-on, and the
+workflow sends the listing, the icon and the previews with it.
+
+Chrome does. The API can only upload to an item that already exists, and only a
+human can create one, so before the first release:
+
+1. In the Developer Dashboard, add a new item and upload any build of this
+   extension. The package is a placeholder; the release workflow replaces it.
+2. Fill the listing from `store/description.txt` and `store/screenshots/`, and
+   the privacy form from
+   [`chrome-web-store/privacy-justifications.md`](../chrome-web-store/privacy-justifications.md).
+3. **Save the draft. Do not submit it.** A submitted version is a version
+   number spent, and the release would then collide with it.
+4. Put the item id in the `CWS_EXTENSION_ID` repository variable.
+
 ## Cutting a release
 
 1. Bump `version` in `package.json`.
