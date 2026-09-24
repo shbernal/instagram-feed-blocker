@@ -33,6 +33,7 @@ the paths in `scripts/chromium-paths.json`, and
 | `tests/`, `e2e/`, `src/**/*.test.*`        | `pnpm lint`, `pnpm typecheck`, `pnpm test:coverage`, `pnpm e2e`      |
 | `src/content/selectors.ts` or the fixtures | the full gate, then `pnpm e2e:real` if you have a signed-in profile  |
 | `store/logo.svg`                           | `pnpm icons`, then `pnpm icons --check`, and look at the 16px result |
+| `amo/`, `chrome-web-store/`, `store/`      | `pnpm publish:amo --dry-run`; both listings publish from those files |
 
 The full gate, which CI also runs on every pull request:
 
