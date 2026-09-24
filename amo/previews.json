@@ -1,0 +1,32 @@
+[
+  {
+    "file": "store/screenshots/instagram-feedblocker-1-before-after.png",
+    "caption": {
+      "en-US": "The same Home page before and after: the feed, the story tray and the suggestions rail all go, and the rest of Instagram stays where it was."
+    }
+  },
+  {
+    "file": "store/screenshots/instagram-feedblocker-2-home-blocked.png",
+    "caption": {
+      "en-US": "A blocked page carries its own switch, so the feed comes back without opening the popup."
+    }
+  },
+  {
+    "file": "store/screenshots/instagram-feedblocker-3-popup-controls.png",
+    "caption": {
+      "en-US": "Feed, stories, suggestions, Explore and Reels are five separate switches, or all of them at once."
+    }
+  },
+  {
+    "file": "store/screenshots/instagram-feedblocker-4-explore-blocked.png",
+    "caption": {
+      "en-US": "Explore loses its grid and keeps its search box, so looking something up still works."
+    }
+  },
+  {
+    "file": "store/screenshots/instagram-feedblocker-5-reels-blocked.png",
+    "caption": {
+      "en-US": "The Reels tab is blocked and its player is paused, while a reel someone sends you still opens."
+    }
+  }
+]

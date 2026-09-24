@@ -1,0 +1,17 @@
+{
+  "slug": "instagram-feed-blocker",
+  "default_locale": "en-US",
+  "summary": {
+    "en-US": "Hide Instagram's feed, stories, suggestions, Explore grid and Reels, each with its own switch. Messages, search, profiles and linked posts keep working. Toggle from the popup, the in-page card, or a shortcut. Nothing leaves your device."
+  },
+  "categories": ["social-communication"],
+  "tags": ["content blocker", "social media"],
+  "homepage": {
+    "en-US": "https://github.com/shbernal/instagram-feed-blocker"
+  },
+  "support_url": {
+    "en-US": "https://github.com/shbernal/instagram-feed-blocker/issues"
+  },
+  "is_experimental": false,
+  "requires_payment": false
+}

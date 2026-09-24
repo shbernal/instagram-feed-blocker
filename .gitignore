@@ -9,3 +9,4 @@ playwright-report
 .env*
 coverage
 !.env.example
+media-capture
