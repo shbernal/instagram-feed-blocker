@@ -48,9 +48,16 @@ Settings stay in the browser's local extension storage. The extension makes no
 network requests of its own, and it asks only for `storage`, `activeTab` and
 access to `instagram.com`. The Firefox build declares that it collects no data.
 
-## Install from source
+## Install
 
-It is not in any extension store yet.
+[**Chrome Web Store**](https://chromewebstore.google.com/detail/opffoeibjpnljfefkinppejocemafdnb) —
+works in Chrome, Edge, Brave and other Chromium browsers.
+
+[**Firefox Add-ons**](https://addons.mozilla.org/addon/instagram-feed-blocker/) —
+awaiting Mozilla's review. Firefox 140 or later, which is where the
+collects-no-data disclosure reaches the user.
+
+## Install from source
 
 ```sh
 pnpm install
