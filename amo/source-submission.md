@@ -42,7 +42,7 @@ outside the block is documentation and keeps its markup.
 > This project uses pnpm, not npm. Do not run npm install — there is no
 > package-lock.json, and the dependency tree is pinned by pnpm-lock.yaml. The
 > required pnpm version is declared in package.json as "packageManager":
-> "pnpm@11.20.0", and Corepack (bundled with Node 24) installs and pins that
+> "pnpm@12.18.0", and Corepack (bundled with Node 24) installs and pins that
 > exact version for you.
 >
 > From the root of the extracted source archive:
@@ -63,9 +63,10 @@ outside the block is documentation and keeps its markup.
 ## Reproducibility
 
 The build is deterministic. Verified by extracting the source archive into a
-fresh directory and running the instructions above with Node 24.21.0 and
-pnpm 11.20.0: the rebuilt `dist-firefox/` held the same 14 files with the same
-SHA-256 as the submitted package. The output is not sensitive to the directory
+fresh directory and running the instructions above with Node 24.22.2 and
+Corepack-provisioned pnpm 12.18.0 in a `node:24-bookworm` container: the rebuilt
+`dist-firefox/` held the same 14 files with the same SHA-256 as a build on the
+development host. The output is not sensitive to the directory
 the build runs in.
 
 Re-run that check before any release that changes dependencies, the Vite config,
@@ -73,9 +74,9 @@ or the manifest config.
 
 ## Note On The pnpm Version
 
-`package.json` pins `pnpm@11.20.0` via `packageManager`. A newer pnpm may be
+`package.json` pins `pnpm@12.18.0` via `packageManager`. A newer pnpm may be
 installed globally on a given machine; both Corepack and pnpm's own version
-management honor the pin and switch to 11.20.0 inside this repository, so the
+management honor the pin and switch to 12.18.0 inside this repository, so the
 lockfile is never resolved by a different version than it was written with. Do
 not write build instructions that name a pnpm version other than the one in
 `packageManager`.
