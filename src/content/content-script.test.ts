@@ -577,8 +577,9 @@ describe('cleanup', () => {
     vi.useFakeTimers()
     visit('/', HOME_BODY)
     getChromeMock().storage.local.get.mockImplementation(() => undefined)
-    const script = await loadContentScript()
     const navigation = new EventTarget()
+    ;(window as unknown as { navigation: EventTarget }).navigation = navigation
+    const script = await loadContentScript()
 
     script.cleanupContentScript()
 
