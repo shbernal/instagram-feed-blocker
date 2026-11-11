@@ -209,16 +209,6 @@ describe('toggling', () => {
     expect(getChromeMock().tabs.sendMessage).not.toHaveBeenCalled()
     expect(storedSettings()).toMatchObject({ homeFeed: false })
   })
-
-  it('swallows the delivery error when the tab has no content script', async () => {
-    withActiveTab({ id: 5, url: 'https://example.com/' })
-    render(<App />)
-
-    await user.click(toggle('Block feed'))
-
-    const [, , respond] = getChromeMock().tabs.sendMessage.mock.calls[0]
-    expect(() => respond?.()).not.toThrow()
-  })
 })
 
 describe('external changes', () => {

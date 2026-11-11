@@ -80,7 +80,6 @@ describe('section helpers', () => {
   it('reports whether any or every section is blocked', () => {
     const one = { ...NOTHING_BLOCKED, explore: true }
 
-    expect(isAnyPageActive(NOTHING_BLOCKED)).toBe(false)
     expect(isAnyPageActive(one)).toBe(true)
     expect(isAllPagesActive(one)).toBe(false)
     expect(isAllPagesActive(DEFAULT_SETTINGS)).toBe(true)

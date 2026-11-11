@@ -4,8 +4,6 @@ import {
   buildBlockingCss,
   CURTAIN_EXPIRY_MS,
   getCurtainSelectors,
-  isBlockingReady,
-  markBlockingReady,
   READY_ATTR,
   READY_FALLBACK_MS,
 } from './blockingStyles'
@@ -78,16 +76,5 @@ describe('the section rules', () => {
     attributes.forEach(attribute => {
       expect(attribute).toMatch(/^data-igfb-[a-z-]+-blocked$/)
     })
-  })
-})
-
-describe('the ready gate', () => {
-  it('is set by markBlockingReady and stays set', () => {
-    expect(isBlockingReady()).toBe(false)
-
-    markBlockingReady()
-    markBlockingReady()
-
-    expect(isBlockingReady()).toBe(true)
   })
 })

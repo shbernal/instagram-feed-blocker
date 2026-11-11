@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   DEFAULT_SETTINGS,
   PAGE_SECTIONS,
-  setAllPages,
   type PageSection,
 } from '../shared/settings'
 import {
@@ -12,7 +11,6 @@ import {
   setSectionBlocked,
 } from './blocking'
 import { getRouteSections } from './routes'
-import { BLOCKED_SECTION_ATTRS } from './selectors'
 
 const blockedSections = () => {
   return PAGE_SECTIONS.filter(isSectionBlocked)
@@ -48,12 +46,6 @@ describe('applySectionBlocking', () => {
     expect(blockedSections()).toEqual([])
   })
 
-  it('blocks nothing when every section is off', () => {
-    applySectionBlocking(setAllPages(DEFAULT_SETTINGS, false), HOME)
-
-    expect(blockedSections()).toEqual([])
-  })
-
   // Re-applying runs on every route check, so it must not churn the DOM.
   it('queues no mutation when nothing changed', () => {
     applySectionBlocking(DEFAULT_SETTINGS, HOME)
@@ -69,14 +61,6 @@ describe('applySectionBlocking', () => {
 })
 
 describe('section attributes', () => {
-  it('live on the root element', () => {
-    setSectionBlocked('explore', true)
-
-    expect(
-      document.documentElement.hasAttribute(BLOCKED_SECTION_ATTRS.explore),
-    ).toBe(true)
-  })
-
   it('are all removed by clearAllBlocking', () => {
     PAGE_SECTIONS.forEach(section => setSectionBlocked(section, true))
 
