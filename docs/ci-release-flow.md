@@ -9,7 +9,10 @@ the one source tree; see [Build targets](./build-targets.md).
 `.github/workflows/ci.yml` runs on pull requests and pushes to `main`, in two
 jobs so a browser-level flake reddens only the end-to-end signal: `validate`
 runs format, lint, typecheck, coverage, build and `lint:firefox`, and `e2e` runs
-the Playwright fixture suite and uploads its report.
+the Playwright fixture suite and uploads its report. A third job,
+`commit-check`, rejects commit messages that carry AI attribution, per
+`.github/cchk.toml`; the AI disclosure goes in the pull request description,
+which `.github/pull_request_template.md` asks for.
 
 `.github/workflows/publish-cws.yml` and `.github/workflows/publish-amo.yml` both
 run when a GitHub Release is published. They are independent: neither waits for
@@ -18,7 +21,8 @@ a red suite through either path even when it was cut without a green run behind
 it.
 
 `.github/dependabot.yml` opens weekly update pull requests for npm dependencies
-and GitHub Actions. Both stores' reviewers flag stale bundled dependencies, so
+and GitHub Actions, with `react` and `react-dom` grouped into one pull request
+since React refuses to run when the two versions differ. Both stores' reviewers flag stale bundled dependencies, so
 the shipped tree keeps moving even when nothing else changes.
 
 Release tags use a leading `v`, for example `v0.1.0`. Both workflows strip it
